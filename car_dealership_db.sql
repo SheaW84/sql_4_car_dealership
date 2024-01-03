@@ -6,6 +6,7 @@ CREATE TABLE dealer_car (
 	price NUMERIC(10,2)
 )
 
+
 CREATE TABLE salesperson(
 	salesperson_id SERIAL PRIMARY KEY,
 	first_name VARCHAR(100),
