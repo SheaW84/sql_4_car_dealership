@@ -1,5 +1,10 @@
 --Stored Functions to insert data into dealer_car table.
-CREATE OR REPLACE FUNCTION add_dealer_car (_dealer_car_id INTEGER,_make VARCHAR, _model VARCHAR, __year NUMERIC, _price NUMERIC)
+CREATE OR REPLACE FUNCTION add_dealer_car (
+	_dealer_car_id INTEGER,
+	_make VARCHAR, 
+	_model VARCHAR, 
+	__year NUMERIC, 
+	_price NUMERIC)
 RETURNS void
 
 AS $MAIN$
@@ -15,11 +20,11 @@ SELECT add_dealer_car(1, 'Chevrolet', 'Silverado 1500', '2022', '40000.00');
 SELECT add_dealer_car(2, 'Chevrolet', 'Malibu', '2021', '35000.00');
 
 --Verify car(s) have been added
-SELECT * FROM dealer_car
+--SELECT * FROM dealer_car
 
 
 --Stored function to insert data into salesperson table
-CREATE OR REPLACE FUNCTION add_salesperson (_salesperson_id INTEGER, _first_name VARCHAR, _last_name VARCHAR)
+CREATE OR REPLACE FUNCTION add_salesperson(_salesperson_id INTEGER, _first_name VARCHAR, _last_name VARCHAR)
 RETURNS void
 
 AS $main$
@@ -42,10 +47,14 @@ SELECT add_salesperson(1, 'Johnny','Bravo');
 SELECT add_salesperson(2, 'Al','Harrington');
 
 --Verify salesmen are added
-SELECT * FROM salesperson
+--SELECT * FROM salesperson
 
 --Add customer function
-CREATE OR REPLACE FUNCTION add_customer(_customer_id INTEGER, _first_name VARCHAR, _last_name VARCHAR, _billing_address VARCHAR )
+CREATE OR REPLACE FUNCTION add_customer(
+	_customer_id INTEGER, 
+	_first_name VARCHAR, 
+	_last_name VARCHAR, 
+	_billing_address VARCHAR )
 RETURNS void
 
 AS $MAIN$
@@ -61,10 +70,16 @@ SELECT add_customer(1,'Peter','Griffin','31 Spooner Street, Quahog, RI');
 SELECT add_customer(2,'Barbara','Pewterschmidt','None of your business, Newport, RI');
 
 --Verify Customers
-SELECT * FROM customer
+--SELECT * FROM customer
 
 --Add invoice function
-CREATE OR REPLACE FUNCTION add_invoice(_invoice_id INTEGER, _dealer_car_id INTEGER, _salesperson_id INTEGER, _customer_id INTEGER, _invoice_date DATE, _total NUMERIC)
+CREATE OR REPLACE FUNCTION add_invoice(
+	_invoice_id INTEGER, 
+	_dealer_car_id INTEGER, 
+	_salesperson_id INTEGER, 
+	_customer_id INTEGER, 
+	_invoice_date DATE, 
+	_total NUMERIC)
 RETURNS void
 
 AS $MAIN$
@@ -81,10 +96,15 @@ SELECT add_invoice(2,2,2,2,TO_DATE('01-03-2024','mm-dd-yyyy'),36000.00);
 
 
 --VERIFY invoice
-SELECT * FROM invoice
+--SELECT * FROM invoice
 
 --add_customer_car function
-CREATE OR REPLACE FUNCTION add_customer_car(_customer_car_id INTEGER, _customer_id INTEGER, _make VARCHAR, _model VARCHAR, __year NUMERIC) 
+CREATE OR REPLACE FUNCTION add_customer_car(
+	_customer_car_id INTEGER, 
+	_customer_id INTEGER, 
+	_make VARCHAR, 
+	_model VARCHAR, 
+	__year NUMERIC) 
 RETURNS void
 
 AS $MAIN$
@@ -101,7 +121,7 @@ SELECT add_customer_car(1,1,'Honda','Civic','2012');
 SELECT add_customer_car(2,2,'Rolls Royce','Phantom','2004');
 
 -- Verify customer car
-SELECT * FROM customer_car
+-- SELECT * FROM customer_car
 
 -- add_mechanic function
 CREATE OR REPLACE FUNCTION add_mechanic(_mechanic_id INTEGER, _first_name VARCHAR, _last_name VARCHAR)
@@ -118,11 +138,12 @@ LANGUAGE plpgsql
 SELECT add_mechanic(1,'Joe','Gatto');
 SELECT add_mechanic(156,'Sal','Volcano');
 
-SELECT * FROM mechanic
+--Verify Mechanic
+--SELECT * FROM mechanic
 
 -- adding column description to table service_ticket
-ALTER TABLE service_ticket
-ADD service_description VARCHAR(255);
+--ALTER TABLE service_ticket
+--ADD service_description VARCHAR(255);
 
 
 -- add_service_ticket
@@ -139,8 +160,17 @@ RETURNS void
 
 AS $MAIN$
 BEGIN
-	INSERT INTO service_ticket(service_ticket_id, customer_car_id, mechanic_id, labor_date, labor_price, parts_price, total, service_description)
-	values(_service_t_id, 
+	INSERT INTO service_ticket(
+		service_ticket_id, 
+		customer_car_id, 
+		mechanic_id, 
+		labor_date, 
+		labor_price, 
+		parts_price, 
+		total, 
+		service_description)
+	values(
+	_service_t_id, 
 	_customer_c_id,
 	_mechanic_id, 
 	_labor_date, 
@@ -157,12 +187,69 @@ LANGUAGE plpgsql
 SELECT add_service_ticket(1,1,1,TO_DATE('01-02-2024','mm-dd-yyyy'),55.00,0.00,55.00,'Maintenance Scan');
 SELECT add_service_ticket(2,2,156,TO_DATE('01-02-2024','mm-dd-yyyy'),55.00,30.00,85.00,'Oil Pressure Sensor Replacement');
 
-SELECT * FROM service_ticket
+--Verify Service Ticket
+--SELECT * FROM service_ticket
+
+-- add_parts function
+
+CREATE OR REPLACE FUNCTION add_parts(
+	_part_id INTEGER, 
+	_service_ticket_id INTEGER, 
+	_part_name VARCHAR, 
+	_manufacturer VARCHAR, 
+	_manufacture_date DATE, 
+	_price NUMERIC) 
+RETURNS void
+AS $MAIN$
+BEGIN 
+	INSERT INTO parts(part_id, service_ticket_id, part_name,manufacturer, manufacture_date, price)
+	VALUES(_part_id, 
+	_service_ticket_id, 
+	_part_name, 
+	_manufacturer, 
+	_manufacture_date, 
+	_price);
+END;
+$MAIN$
+LANGUAGE plpgsql
+
+--calling add_parts
+SELECT add_parts(1,null,'Front and Rear Brake Kit','AutoShack', TO_DATE('01-02-2024','mm-dd-yyyy'),168.29);
+SELECT add_parts(2,2,'Oil Pressure Sensor','Ronybuy',TO_DATE('01-02-2023','mm-dd-yyyy'),30.00);
+
+--Verify parts
+--SELECT * FROM parts
 
 
+INSERT INTO service_record(
+	service_record_id,
+	customer_car_id)
+	VALUES(
+		1,
+		1);
+
+INSERT INTO service_record(
+	service_record_id,
+	customer_car_id)
+	VALUES(
+		2,
+		2);
+	
+SELECT * FROM service_record
 
 
+INSERT INTO service_history(
+	service_history_id,
+	service_record_id)
+	VALUES(
+		1,
+		1);
 
-
-
-
+INSERT INTO service_history(
+	service_history_id,
+	service_record_id)
+	VALUES(
+		2,
+		2);
+	
+SELECT * FROM service_history
