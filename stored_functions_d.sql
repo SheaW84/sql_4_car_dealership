@@ -83,6 +83,82 @@ SELECT add_invoice(2,2,2,2,TO_DATE('01-03-2024','mm-dd-yyyy'),36000.00);
 --VERIFY invoice
 SELECT * FROM invoice
 
+--add_customer_car function
+CREATE OR REPLACE FUNCTION add_customer_car(_customer_car_id INTEGER, _customer_id INTEGER, _make VARCHAR, _model VARCHAR, __year NUMERIC) 
+RETURNS void
+
+AS $MAIN$
+BEGIN
+	INSERT INTO customer_car(customer_car_id, customer_id, make, model, _year)
+	VALUES(_customer_car_id, _customer_id, _make, _model, __year);
+END;
+$MAIN$
+
+LANGUAGE plpgsql
+
+-- Calling add_customer_car
+SELECT add_customer_car(1,1,'Honda','Civic','2012');
+SELECT add_customer_car(2,2,'Rolls Royce','Phantom','2004');
+
+-- Verify customer car
+SELECT * FROM customer_car
+
+-- add_mechanic function
+CREATE OR REPLACE FUNCTION add_mechanic(_mechanic_id INTEGER, _first_name VARCHAR, _last_name VARCHAR)
+RETURNS void
+AS $MAIN$
+BEGIN
+	INSERT INTO mechanic(mechanic_id, first_name, last_name)
+	VALUES(_mechanic_id, _first_name, _last_name);
+END;
+$MAIN$
+LANGUAGE plpgsql
+
+-- calling add_mechanic
+SELECT add_mechanic(1,'Joe','Gatto');
+SELECT add_mechanic(156,'Sal','Volcano');
+
+SELECT * FROM mechanic
+
+-- adding column description to table service_ticket
+ALTER TABLE service_ticket
+ADD service_description VARCHAR(255);
+
+
+-- add_service_ticket
+CREATE OR REPLACE FUNCTION add_service_ticket(
+	_service_t_id INTEGER, 
+	_customer_c_id INTEGER,
+	_mechanic_id INTEGER, 
+	_labor_date DATE, 
+	_labor_price NUMERIC,
+	_parts_price NUMERIC,
+	_total NUMERIC,
+	_service_d VARCHAR)
+RETURNS void
+
+AS $MAIN$
+BEGIN
+	INSERT INTO service_ticket(service_ticket_id, customer_car_id, mechanic_id, labor_date, labor_price, parts_price, total, service_description)
+	values(_service_t_id, 
+	_customer_c_id,
+	_mechanic_id, 
+	_labor_date, 
+	_labor_price,
+	_parts_price,
+	_total,
+	_service_d );	
+END;
+$MAIN$
+LANGUAGE plpgsql
+
+--call add_service_ticket
+
+SELECT add_service_ticket(1,1,1,TO_DATE('01-02-2024','mm-dd-yyyy'),55.00,0.00,55.00,'Maintenance Scan');
+SELECT add_service_ticket(2,2,156,TO_DATE('01-02-2024','mm-dd-yyyy'),55.00,30.00,85.00,'Oil Pressure Sensor Replacement');
+
+SELECT * FROM service_ticket
+
 
 
 
